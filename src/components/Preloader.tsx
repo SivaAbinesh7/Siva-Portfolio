@@ -68,7 +68,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           <h1 className="text-2xl md:text-3xl font-light text-foreground text-glow mb-4">
             Siva Abinesh
           </h1>
-          <p className="text-xl text-muted-foreground">Loading Portfolio...</p>
+          <p className="text-xl text-muted-foreground">⚡Welcome to my Portfolio⚡</p>
         </div>
 
         <div className="w-80 max-w-md mx-auto">

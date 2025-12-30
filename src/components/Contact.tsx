@@ -59,6 +59,8 @@ const Contact = () => {
     return () => ctx.revert();
   }, []);
 
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -66,8 +68,28 @@ const Contact = () => {
     }));
   };
 
+  const handleSubmit = () => {
+    setStatus('sending');
+  };
+
+  const handleIframeLoad = () => {
+    if (status === 'sending') {
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+      setTimeout(() => setStatus('idle'), 5000);
+    }
+  };
+
   return (
     <section id="contact" ref={sectionRef} className="py-20 px-6 relative overflow-hidden">
+      {/* Hidden iframe to capture form submission and prevent redirect */}
+      <iframe
+        name="hidden_iframe"
+        id="hidden_iframe"
+        style={{ display: 'none' }}
+        onLoad={handleIframeLoad}
+      ></iframe>
+
       <div className="container mx-auto max-w-6xl">
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-light text-foreground mb-4">
@@ -81,18 +103,22 @@ const Contact = () => {
 
         <div className="grid lg:grid-cols-2 gap-12">
           <div ref={formRef} className="space-y-6">
-            <form action="https://formsubmit.co/sivaabinesh096@gmail.com" method="POST" className="space-y-6">
+            <form
+              action="https://formsubmit.co/sivaabinesh096@gmail.com"
+              method="POST"
+              target="hidden_iframe"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               {/* FormSubmit Configuration */}
-              <input type="hidden" name="_subject" value="New Portfolio Contact Message" />
+              <input type="hidden" name="_subject" value={`New Portfolio Message from ${formData.name}`} />
               <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_next" value="http://localhost:8080/" />
-              <input type="hidden" name="_autoresponse" value={`Hi ${formData.name},
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="System_Source" value="Siva Portfolio" />
+              <input type="hidden" name="_autoresponse" value={`Hi ${formData.name}, thank you for your message! I will get back to you as soon as possible. Best regards, Siva Abinesh`} />
 
-Thanks for reaching out! I’ve received your message and will get back to you soon.
-
-Best regards,
-Siva Abinesh`} />
-              {/* End Configuration */}
+              {/* Spam Protection */}
+              <input type="text" name="_honey" style={{ display: 'none' }} />
 
               <div>
                 <label htmlFor="name" className="block text-foreground mb-2 font-medium">Name</label>
@@ -109,9 +135,20 @@ Siva Abinesh`} />
                 <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={6} className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 resize-none" placeholder="Tell me about your project..." />
               </div>
 
-              <button type="submit" className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary text-primary-foreground rounded-lg font-medium hover:shadow-glow-primary transition-all duration-300 hover:scale-105">
-                Send Message
-                <PaperPlaneTilt size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary text-primary-foreground rounded-lg font-medium hover:shadow-glow-primary transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {status === 'idle' && (
+                  <>
+                    Send Message
+                    <PaperPlaneTilt size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                  </>
+                )}
+                {status === 'sending' && 'Sending...'}
+                {status === 'success' && 'Message Sent!'}
+                {status === 'error' && 'Something went wrong. Try again.'}
               </button>
             </form>
           </div>
