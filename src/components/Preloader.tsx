@@ -22,19 +22,19 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
     })
       .to(progressBarRef.current, {
         width: "100%",
-        duration: 2.5,
+        duration: 1.5,
         ease: "power2.out"
       }, "-=0.3")
       .to({ value: 0 }, {
         value: 100,
-        duration: 2.5,
+        duration: 1.5,
         ease: "power2.out",
         onUpdate: function () {
           if (percentRef.current) {
             percentRef.current.textContent = Math.round(this.targets()[0].value) + '%';
           }
         }
-      }, "-=2.5")
+      }, "-=1.5")
       .to(logoRef.current, {
         scale: 1.1,
         duration: 0.3,
