@@ -15,7 +15,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <Analytics />
-      <BrowserRouter>
+      <BrowserRouter basename="/Siva-Portfolio">
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="*" element={<NotFound />} />
