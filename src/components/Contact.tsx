@@ -68,28 +68,42 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setStatus('sending');
-  };
 
-  const handleIframeLoad = () => {
-    if (status === 'sending') {
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setStatus('idle'), 5000);
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/sivaabinesh096@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          _subject: `New Portfolio Message from ${formData.name}`,
+          System_Source: "Siva Portfolio",
+          _autoresponse: `Hi ${formData.name}, thank you for your message! I will get back to you as soon as possible. Best regards, Siva Abinesh`
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success === "true" || response.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setStatus('error');
     }
   };
 
   return (
     <section id="contact" ref={sectionRef} className="py-20 px-6 relative overflow-hidden">
-      {/* Hidden iframe to capture form submission and prevent redirect */}
-      <iframe
-        name="hidden_iframe"
-        id="hidden_iframe"
-        style={{ display: 'none' }}
-        onLoad={handleIframeLoad}
-      ></iframe>
-
       <div className="container mx-auto max-w-6xl">
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-light text-foreground mb-4">
@@ -104,22 +118,9 @@ const Contact = () => {
         <div className="grid lg:grid-cols-2 gap-12">
           <div ref={formRef} className="space-y-6">
             <form
-              action="https://formsubmit.co/sivaabinesh096@gmail.com"
-              method="POST"
-              target="hidden_iframe"
               onSubmit={handleSubmit}
               className="space-y-6"
             >
-              {/* FormSubmit Configuration */}
-              <input type="hidden" name="_subject" value={`New Portfolio Message from ${formData.name}`} />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="System_Source" value="Siva Portfolio" />
-              <input type="hidden" name="_autoresponse" value={`Hi ${formData.name}, thank you for your message! I will get back to you as soon as possible. Best regards, Siva Abinesh`} />
-
-              {/* Spam Protection */}
-              <input type="text" name="_honey" style={{ display: 'none' }} />
-
               <div>
                 <label htmlFor="name" className="block text-foreground mb-2 font-medium">Name</label>
                 <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="Your name" />
