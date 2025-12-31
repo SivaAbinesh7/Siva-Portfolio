@@ -81,6 +81,9 @@ const Contact = () => {
         },
         body: JSON.stringify({
           ...formData,
+          _replyto: formData.email,
+          _captcha: "false",
+          _template: "table",
           _subject: `New Portfolio Message from ${formData.name}`,
           System_Source: "Siva Portfolio",
           _autoresponse: `Hi ${formData.name}, thank you for your message! I will get back to you as soon as possible. Best regards, Siva Abinesh`
