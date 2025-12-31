@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PaperPlaneTilt, GithubLogo, LinkedinLogo, InstagramLogo, Envelope, Phone, MapPin } from 'phosphor-react';
+import emailjs from '@emailjs/browser';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +17,8 @@ const Contact = () => {
     email: '',
     message: ''
   });
+
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -59,8 +62,6 @@ const Contact = () => {
     return () => ctx.revert();
   }, []);
 
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -72,27 +73,27 @@ const Contact = () => {
     e.preventDefault();
     setStatus('sending');
 
+    // Replace these with your actual EmailJS IDs from your dashboard
+    const SERVICE_ID = "YOUR_SERVICE_ID";
+    const TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+    const PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+
     try {
-      const response = await fetch("https://formsubmit.co/ajax/sivaabinesh096@gmail.com", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          ...formData,
-          _replyto: formData.email,
-          _captcha: "false",
-          _template: "table",
-          _subject: `New Portfolio Message from ${formData.name}`,
-          System_Source: "Siva Portfolio",
-          _autoresponse: `Hi ${formData.name}, thank you for your message! I will get back to you as soon as possible. Best regards, Siva Abinesh`
-        })
-      });
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_name: "Siva Abinesh",
+      };
 
-      const result = await response.json();
+      const response = await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        templateParams,
+        PUBLIC_KEY
+      );
 
-      if (result.success === "true" || response.ok) {
+      if (response.status === 200) {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
@@ -100,7 +101,7 @@ const Contact = () => {
         setStatus('error');
       }
     } catch (error) {
-      console.error("Form submission error:", error);
+      console.error("EmailJS Error:", error);
       setStatus('error');
     }
   };
