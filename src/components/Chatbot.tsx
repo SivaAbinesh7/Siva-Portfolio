@@ -103,7 +103,7 @@ const Chatbot: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-white rounded-full">
-                  <img src="/Images/ai-assistant-icon.png" alt="AI Assistant" className="w-5 h-5 object-contain" />
+                  <img src="Images/ai-assistant-icon.png" alt="AI Assistant" className="w-5 h-5 object-contain" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm">AI Assistant</h3>
@@ -145,7 +145,7 @@ const Chatbot: React.FC = () => {
         {isOpen ? (
           <X size={24} className="text-white" />
         ) : (
-          <img src="/Images/chatbot-button-icon.png" alt="Chat" className="w-full h-full object-cover rounded-full" />
+          <img src="Images/chatbot-button-icon.png" alt="Chat" className="w-full h-full object-cover rounded-full" />
         )}
       </button>
     </div>

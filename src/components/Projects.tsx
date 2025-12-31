@@ -15,7 +15,7 @@ const Projects = () => {
       id: 1,
       title: "Smart Interactive Gym & Diet Planner",
       description: "A React-based fitness app with an interactive body-map, personalized workout splits, and diet planning. Uses Three.js for 3D visuals and Firebase for auth.",
-      image: "/Images/project-1.jpg",
+      image: "Images/project-1.jpg",
       tech: ["React", "Tailwind", "Firebase", "Node.js", "Three.js"],
       liveUrl: "https://github.com/SivaAbinesh07/smart-gym-planner",
       githubUrl: "https://github.com/SivaAbinesh07/smart-gym-planner"
@@ -24,7 +24,7 @@ const Projects = () => {
       id: 2,
       title: "Weather & News Dashboard",
       description: "Full-stack dashboard serving live weather and trending news for Indian cities. Built with React, Node.js, and external APIs.",
-      image: "/Images/project-2.jpg",
+      image: "Images/project-2.jpg",
       tech: ["React", "Node.js", "Express", "REST APIs", "HTML/CSS"],
       liveUrl: "https://github.com/SivaAbinesh07/weather-news-dashboard",
       githubUrl: "https://github.com/SivaAbinesh07/weather-news-dashboard"
@@ -33,7 +33,7 @@ const Projects = () => {
       id: 3,
       title: "AI-Powered Smart Reminder App",
       description: "A modern reminder app with an AI virtual assistant (LLaMA via Groq SDK), real-time countdown timers, and full CRUD operations.",
-      image: "/Images/project-3.jpg",
+      image: "Images/project-3.jpg",
       tech: ["React", "TypeScript", "Vite", "Tailwind", "Groq SDK"],
       liveUrl: "https://github.com/SivaAbinesh07/ai-reminder-app",
       githubUrl: "https://github.com/SivaAbinesh07/ai-reminder-app"
