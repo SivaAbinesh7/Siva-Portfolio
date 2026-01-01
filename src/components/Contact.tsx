@@ -74,9 +74,9 @@ const Contact = () => {
     setStatus('sending');
 
     // Replace these with your actual EmailJS IDs from your dashboard
-    const SERVICE_ID = "YOUR_SERVICE_ID";
-    const TEMPLATE_ID = "YOUR_TEMPLATE_ID";
-    const PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+    const SERVICE_ID = "service_siva-portfolio";
+    const TEMPLATE_ID = "template_psqf06d";
+    const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
 
     try {
       const templateParams = {
