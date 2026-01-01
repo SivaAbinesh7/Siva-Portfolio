@@ -137,19 +137,15 @@ const Contact = () => {
               onSubmit={handleSubmit}
               className="space-y-6"
             >
-              {/* Recipient context for EmailJS */}
-              <input type="hidden" name="to_name" value="Siva Abinesh" />
-              <input type="hidden" name="to_email" value="sivaabinesh096@gmail.com" />
-              <input type="hidden" name="recipient" value="sivaabinesh096@gmail.com" />
 
               <div>
                 <label htmlFor="name" className="block text-foreground mb-2 font-medium">Name</label>
-                <input type="text" id="name" name="user_name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="Your name" />
+                <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="Your name" />
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-foreground mb-2 font-medium">Email</label>
-                <input type="email" id="email" name="user_email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="your.email@example.com" />
+                <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="your.email@example.com" />
               </div>
 
               <div>
