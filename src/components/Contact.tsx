@@ -129,7 +129,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" ref={sectionRef} className="py-20 px-6 relative overflow-hidden">
+    <section id="contact" ref={sectionRef} className="py-20 px-6 relative">
       <div className="container mx-auto max-w-6xl">
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-light text-foreground mb-4">
@@ -144,9 +144,8 @@ const Contact = () => {
         <div className="grid lg:grid-cols-2 gap-12">
           <div className="space-y-6">
             <form
-              ref={formRef}
               onSubmit={handleSubmit}
-              className="space-y-6"
+              className="space-y-6 pb-4" // Added padding bottom
             >
               <div>
                 <label htmlFor="name" className="block text-foreground mb-2 font-medium">Name</label>
@@ -166,7 +165,7 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary text-primary-foreground rounded-lg font-medium hover:shadow-glow-primary transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary text-primary-foreground rounded-lg font-medium hover:shadow-glow-primary transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {status === 'idle' && (
                   <>
