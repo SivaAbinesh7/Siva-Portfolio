@@ -21,6 +21,9 @@ const Contact = () => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   useEffect(() => {
+    // Initialize EmailJS with Public Key once
+    emailjs.init("Yq7m3NeHCNqbf2m5J");
+
     const ctx = gsap.context(() => {
       gsap.from(titleRef.current?.children || [], {
         y: 50,
@@ -75,43 +78,37 @@ const Contact = () => {
 
     const SERVICE_ID = "service_siva-portfolio";
     const TEMPLATE_ID = "template_psqf06d";
-    const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
 
     try {
-      // Using a wide range of common keys to ensure template compatibility
       const templateParams = {
+        to_name: "Siva Abinesh",
         from_name: formData.name,
         user_name: formData.name,
         from_email: formData.email,
         user_email: formData.email,
         message: formData.message,
-        to_name: "Siva Abinesh",
+        reply_to: formData.email,
       };
 
-      console.log("Attempting to send email via EmailJS...", { SERVICE_ID, TEMPLATE_ID });
+      console.log("EmailJS Sending with params:", templateParams);
 
       const response = await emailjs.send(
         SERVICE_ID,
         TEMPLATE_ID,
-        templateParams,
-        PUBLIC_KEY
+        templateParams
       );
 
-      console.log("EmailJS Success Response:", response);
+      console.log("EmailJS Response:", response);
 
       if (response.status === 200) {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
       } else {
-        console.error("EmailJS Unexpected Status:", response);
         setStatus('error');
       }
     } catch (error: any) {
-      console.error("EmailJS Detailed Error:", error);
-      // If the error has a text or message property, log it clearly
-      const errorMsg = error?.text || error?.message || JSON.stringify(error);
-      console.error("Error Message Detail:", errorMsg);
+      console.error("Detailed EmailJS Error:", error);
       setStatus('error');
     }
   };
