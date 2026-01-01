@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
 
@@ -77,6 +77,8 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formRef.current) return;
+
     setStatus('sending');
     setErrorMessage('');
 
@@ -85,30 +87,15 @@ const Contact = () => {
     const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
 
     try {
-      // "Kitchen Sink" approach: Send every possible key that EmailJS templates commonly use
-      const templateParams = {
-        to_name: "Siva Abinesh",
-        to_email: "sivaabinesh096@gmail.com", // Likely key
-        recipient_email: "sivaabinesh096@gmail.com", // Another common key
-        email_to: "sivaabinesh096@gmail.com", // Common in some templates
-        from_name: formData.name,
-        user_name: formData.name,
-        from_email: formData.email,
-        user_email: formData.email,
-        message: formData.message,
-        reply_to: formData.email,
-      };
-
-      console.log("DEBUG: Sending to EmailJS...", {
+      console.log("DEBUG: Sending via sendForm...", {
         service: SERVICE_ID,
-        template: TEMPLATE_ID,
-        params: templateParams
+        template: TEMPLATE_ID
       });
 
-      const response = await emailjs.send(
+      const response = await emailjs.sendForm(
         SERVICE_ID,
         TEMPLATE_ID,
-        templateParams,
+        "form", // Can use the selector or the element
         PUBLIC_KEY
       );
 
@@ -119,13 +106,11 @@ const Contact = () => {
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
       } else {
-        const errorDetail = `Status ${response.status}: ${response.text}`;
-        setErrorMessage(errorDetail);
+        setErrorMessage(`Status ${response.status}: ${response.text}`);
         setStatus('error');
       }
     } catch (error: any) {
       console.error("DEBUG: EmailJS Error Object:", error);
-      // Extract the most readable error message
       const detail = error?.text || error?.message || (typeof error === 'string' ? error : "Unknown Error");
       setErrorMessage(detail);
       setStatus('error');
@@ -146,19 +131,25 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          <div ref={formRef} className="space-y-6">
+          <div className="space-y-6">
             <form
+              ref={formRef}
               onSubmit={handleSubmit}
               className="space-y-6"
             >
+              {/* Recipient context for EmailJS */}
+              <input type="hidden" name="to_name" value="Siva Abinesh" />
+              <input type="hidden" name="to_email" value="sivaabinesh096@gmail.com" />
+              <input type="hidden" name="recipient" value="sivaabinesh096@gmail.com" />
+
               <div>
                 <label htmlFor="name" className="block text-foreground mb-2 font-medium">Name</label>
-                <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="Your name" />
+                <input type="text" id="name" name="user_name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="Your name" />
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-foreground mb-2 font-medium">Email</label>
-                <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="your.email@example.com" />
+                <input type="email" id="email" name="user_email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="your.email@example.com" />
               </div>
 
               <div>
