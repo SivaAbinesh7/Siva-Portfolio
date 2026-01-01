@@ -87,10 +87,11 @@ const Contact = () => {
     try {
       const templateParams = {
         to_name: "Siva Abinesh",
+        to_email: "sivaabinesh096@gmail.com", // Explicitly setting the recipient email
         from_name: formData.name,
-        user_name: formData.name, // Many templates use user_name
+        user_name: formData.name,
         from_email: formData.email,
-        user_email: formData.email, // Many templates use user_email
+        user_email: formData.email,
         message: formData.message,
         reply_to: formData.email,
       };
@@ -101,7 +102,7 @@ const Contact = () => {
         SERVICE_ID,
         TEMPLATE_ID,
         templateParams,
-        PUBLIC_KEY // Redundant key for safety
+        PUBLIC_KEY
       );
 
       console.log("EmailJS Response:", response);
