@@ -19,10 +19,12 @@ const Contact = () => {
   });
 
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
     // Initialize EmailJS with Public Key once
-    emailjs.init("Yq7m3NeHCNqbf2m5J");
+    const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
+    emailjs.init(PUBLIC_KEY);
 
     const ctx = gsap.context(() => {
       gsap.from(titleRef.current?.children || [], {
@@ -66,6 +68,7 @@ const Contact = () => {
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (status !== 'idle') setStatus('idle'); // Reset status on edit
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
@@ -75,17 +78,19 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
+    setErrorMessage('');
 
     const SERVICE_ID = "service_siva-portfolio";
     const TEMPLATE_ID = "template_psqf06d";
+    const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
 
     try {
       const templateParams = {
         to_name: "Siva Abinesh",
         from_name: formData.name,
-        user_name: formData.name,
+        user_name: formData.name, // Many templates use user_name
         from_email: formData.email,
-        user_email: formData.email,
+        user_email: formData.email, // Many templates use user_email
         message: formData.message,
         reply_to: formData.email,
       };
@@ -95,7 +100,8 @@ const Contact = () => {
       const response = await emailjs.send(
         SERVICE_ID,
         TEMPLATE_ID,
-        templateParams
+        templateParams,
+        PUBLIC_KEY // Redundant key for safety
       );
 
       console.log("EmailJS Response:", response);
@@ -105,10 +111,14 @@ const Contact = () => {
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
       } else {
+        const errText = `Status ${response.status}: ${response.text}`;
+        setErrorMessage(errText);
         setStatus('error');
       }
     } catch (error: any) {
       console.error("Detailed EmailJS Error:", error);
+      const detail = error?.text || error?.message || "Unknown error";
+      setErrorMessage(detail);
       setStatus('error');
     }
   };
@@ -160,7 +170,7 @@ const Contact = () => {
                 )}
                 {status === 'sending' && 'Sending...'}
                 {status === 'success' && 'Message Sent!'}
-                {status === 'error' && 'Something went wrong. Try again.'}
+                {status === 'error' && (errorMessage ? `Error: ${errorMessage}` : 'Something went wrong. Try again.')}
               </button>
             </form>
           </div>
