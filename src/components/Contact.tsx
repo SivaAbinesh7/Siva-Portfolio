@@ -27,6 +27,9 @@ const Contact = () => {
     emailjs.init(PUBLIC_KEY);
 
     const ctx = gsap.context(() => {
+      // ANIMATION NOTE: We are NOT animating the form children to ensure 
+      // the submission button and inputs are always 100% visible.
+
       gsap.from(titleRef.current?.children || [], {
         y: 50,
         opacity: 0,
@@ -35,18 +38,6 @@ const Contact = () => {
         ease: "power3.out",
         scrollTrigger: {
           trigger: titleRef.current,
-          start: "top 80%"
-        }
-      });
-
-      gsap.from(formRef.current?.children || [], {
-        x: -50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: formRef.current,
           start: "top 80%"
         }
       });
@@ -77,25 +68,45 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formRef.current) return;
-
     setStatus('sending');
     setErrorMessage('');
 
     const SERVICE_ID = "service_siva-portfolio";
     const TEMPLATE_ID = "template_psqf06d";
     const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
+    const ADMIN_EMAIL = "sivaabinesh096@gmail.com";
 
     try {
-      console.log("DEBUG: Sending via sendForm...", {
-        service: SERVICE_ID,
-        template: TEMPLATE_ID
-      });
+      // "Kitchen Sink" Payload to force recipient detection
+      // We send the admin email in every possible recipient field key
+      const templateParams = {
+        // Core fields (User input)
+        from_name: formData.name,
+        user_name: formData.name,
+        from_email: formData.email,
+        user_email: formData.email,
+        message: formData.message,
+        reply_to: formData.email,
 
-      const response = await emailjs.sendForm(
+        // Forced Recipient fields (The template MUST match one of these)
+        to_email: ADMIN_EMAIL,
+        recipient_email: ADMIN_EMAIL,
+        email_to: ADMIN_EMAIL,
+        to_name: "Siva Abinesh",
+
+        // Other common fallbacks
+        to: ADMIN_EMAIL,
+        target: ADMIN_EMAIL,
+        destination: ADMIN_EMAIL,
+        recipient: ADMIN_EMAIL
+      };
+
+      console.log("DEBUG: Sending Payload:", templateParams);
+
+      const response = await emailjs.send(
         SERVICE_ID,
         TEMPLATE_ID,
-        "form", // Can use the selector or the element
+        templateParams,
         PUBLIC_KEY
       );
 
@@ -137,7 +148,6 @@ const Contact = () => {
               onSubmit={handleSubmit}
               className="space-y-6"
             >
-
               <div>
                 <label htmlFor="name" className="block text-foreground mb-2 font-medium">Name</label>
                 <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 bg-input glass border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300" placeholder="Your name" />
