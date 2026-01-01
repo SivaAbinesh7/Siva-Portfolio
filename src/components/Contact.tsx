@@ -85,9 +85,12 @@ const Contact = () => {
     const PUBLIC_KEY = "Yq7m3NeHCNqbf2m5J";
 
     try {
+      // "Kitchen Sink" approach: Send every possible key that EmailJS templates commonly use
       const templateParams = {
         to_name: "Siva Abinesh",
-        to_email: "sivaabinesh096@gmail.com", // Explicitly setting the recipient email
+        to_email: "sivaabinesh096@gmail.com", // Likely key
+        recipient_email: "sivaabinesh096@gmail.com", // Another common key
+        email_to: "sivaabinesh096@gmail.com", // Common in some templates
         from_name: formData.name,
         user_name: formData.name,
         from_email: formData.email,
@@ -96,7 +99,11 @@ const Contact = () => {
         reply_to: formData.email,
       };
 
-      console.log("EmailJS Sending with params:", templateParams);
+      console.log("DEBUG: Sending to EmailJS...", {
+        service: SERVICE_ID,
+        template: TEMPLATE_ID,
+        params: templateParams
+      });
 
       const response = await emailjs.send(
         SERVICE_ID,
@@ -105,20 +112,21 @@ const Contact = () => {
         PUBLIC_KEY
       );
 
-      console.log("EmailJS Response:", response);
+      console.log("DEBUG: EmailJS Success!", response);
 
       if (response.status === 200) {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
       } else {
-        const errText = `Status ${response.status}: ${response.text}`;
-        setErrorMessage(errText);
+        const errorDetail = `Status ${response.status}: ${response.text}`;
+        setErrorMessage(errorDetail);
         setStatus('error');
       }
     } catch (error: any) {
-      console.error("Detailed EmailJS Error:", error);
-      const detail = error?.text || error?.message || "Unknown error";
+      console.error("DEBUG: EmailJS Error Object:", error);
+      // Extract the most readable error message
+      const detail = error?.text || error?.message || (typeof error === 'string' ? error : "Unknown Error");
       setErrorMessage(detail);
       setStatus('error');
     }
