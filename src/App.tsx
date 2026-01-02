@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <Analytics />
-    <BrowserRouter basename="/Siva-Portfolio">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="*" element={<NotFound />} />
