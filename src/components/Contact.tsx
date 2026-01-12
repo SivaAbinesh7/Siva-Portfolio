@@ -78,7 +78,7 @@ const Contact = () => {
 
     try {
       // "Kitchen Sink" Payload to force recipient detection
-      // We send the admin email in every possible recipient field key
+      // Now sending to the USER's email only (Auto-responder mode)
       const templateParams = {
         // Core fields (User input)
         from_name: formData.name,
@@ -88,17 +88,17 @@ const Contact = () => {
         message: formData.message,
         reply_to: formData.email,
 
-        // Forced Recipient fields (The template MUST match one of these)
-        to_email: ADMIN_EMAIL,
-        recipient_email: ADMIN_EMAIL,
-        email_to: ADMIN_EMAIL,
-        to_name: "Siva Abinesh",
+        // Forced Recipient fields (Dynamic to user's email)
+        to_email: formData.email,
+        recipient_email: formData.email,
+        email_to: formData.email,
+        to_name: formData.name,
 
         // Other common fallbacks
-        to: ADMIN_EMAIL,
-        target: ADMIN_EMAIL,
-        destination: ADMIN_EMAIL,
-        recipient: ADMIN_EMAIL
+        to: formData.email,
+        target: formData.email,
+        destination: formData.email,
+        recipient: formData.email
       };
 
       console.log("DEBUG: Sending Payload:", templateParams);
